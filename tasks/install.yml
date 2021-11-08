@@ -1,0 +1,58 @@
+---
+- name: check for snoopy installation
+  stat:
+    path: '{{ snoopy_exec_path }}/snoopy-enable'
+  changed_when: false
+  register: snoopy_binary
+
+- when: not snoopy_binary.stat.exists or snoopy_force_install|bool
+  block:
+    - name: "Create log file"
+      file:
+        path: /var/log/snoopy.log
+        state: touch
+        mode: '0644'
+
+    - name: "Download requirements"
+      package:
+        name:
+          - gcc
+          - gzip
+          - make
+          - procps
+          - socat
+          - tar
+          - wget
+        state: present
+
+    - name: "Download last snoopy script"
+      get_url:
+        url: https://github.com/a2o/snoopy/raw/install/install/install-snoopy.sh
+        dest: /tmp/install-snoopy.sh
+        mode: '0755'
+
+    - name: "Install snoppy"
+      command: /tmp/install-snoopy.sh stable
+
+- name: Set config
+  lineinfile:
+    dest: '{{ snoopy_cfg_file }}'
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+  with_items:
+    - {regexp: "^output = file:", line: "output = file:{{ snoopy_log_file }}"}
+    - {regexp: '^filter_chain =', line: 'filter_chain = "exclude_spawns_of:cron,my_daemon;only_tty"'}
+    - {regexp: "^message_format =", line: 'message_format = "{{ snoopy_msg_format }}"'}
+  notify:
+    - stop snoopy
+    - start snoopy
+
+#- name: snoopy | Create a logrotate file
+#  copy:
+#    src: snoopy
+#    dest: /etc/logrotate.d/snoopy
+#    owner: root
+#    group: root
+#    mode: '0640'
+#
