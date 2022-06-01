@@ -1,13 +1,13 @@
 ---
 - name: "Install package"
-  package:
+  ansible.builtin.package:
     name: snoopy
     state: present
 
 #- when: ansible_distribution_major_version == '10'
 #  block:
 - name: "Create the enable script"
-  copy:
+  ansible.builtin.copy:
     src: snoopy-enable
     dest: /usr/sbin/snoopy-enable
     owner: root
@@ -15,7 +15,7 @@
     mode: '0755'
 
 - name: "Create the disable script"
-  copy:
+  ansible.builtin.copy:
     src: snoopy-disable
     dest: /usr/sbin/snoopy-disable
     owner: root
@@ -23,7 +23,7 @@
     mode: '0755'
 
 - name: "Fix bug on start"
-  replace:
+  ansible.builtin.replace:
     path: '{{ snoopy_exec_path }}/snoopy-enable'
     regexp: '-x'
     replace: '-r'

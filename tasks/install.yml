@@ -1,20 +1,21 @@
 ---
-- name: check for snoopy installation
-  stat:
+- name: "Check for snoopy installation"
+  ansible.builtin.stat:
     path: '{{ snoopy_exec_path }}/snoopy-enable'
   changed_when: false
   register: snoopy_binary
 
-- when: not snoopy_binary.stat.exists or snoopy_force_install|bool
+- name: "Installation"
+  when: not snoopy_binary.stat.exists or snoopy_force_install|bool
   block:
     - name: "Create log file"
-      file:
+      ansible.builtin.file:
         path: /var/log/snoopy.log
         state: touch
         mode: '0644'
 
     - name: "Download requirements"
-      package:
+      ansible.builtin.package:
         name:
           - gcc
           - gzip
@@ -26,16 +27,17 @@
         state: present
 
     - name: "Download last snoopy script"
-      get_url:
+      ansible.builtin.get_url:
         url: https://github.com/a2o/snoopy/raw/install/install/install-snoopy.sh
         dest: /tmp/install-snoopy.sh
         mode: '0755'
 
     - name: "Install snoppy"
-      command: /tmp/install-snoopy.sh stable
+      ansible.builtin.command: /tmp/install-snoopy.sh stable
+      changed_when: false
 
-- name: Set config
-  lineinfile:
+- name: "Set config"
+  ansible.builtin.lineinfile:
     dest: '{{ snoopy_cfg_file }}'
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
@@ -49,7 +51,7 @@
     - start snoopy
 
 #- name: snoopy | Create a logrotate file
-#  copy:
+#  ansible.builtin.copy:
 #    src: snoopy
 #    dest: /etc/logrotate.d/snoopy
 #    owner: root
