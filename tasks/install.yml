@@ -8,6 +8,12 @@
 - name: "Installation"
   when: not snoopy_binary.stat.exists or snoopy_force_install|bool
   block:
+    - name: "DEBIAN11 | Install requirements"
+      ansible.builtin.package:
+        name: libc6-dev
+        state: present
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '11'
+
     - name: "Create log file"
       ansible.builtin.file:
         path: /var/log/snoopy.log
