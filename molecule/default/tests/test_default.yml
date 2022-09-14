@@ -1,5 +1,0 @@
----
-file:
-  /var/log/snoopy.log:
-    exists: true
-    mode: "0644"

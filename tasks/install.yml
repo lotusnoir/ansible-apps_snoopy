@@ -1,7 +1,7 @@
 ---
 - name: "Check for snoopy installation"
   ansible.builtin.stat:
-    path: '{{ snoopy_exec_path }}/snoopy-enable'
+    path: '{{ snoopy_exec_path }}/snoopyctl'
   changed_when: false
   register: snoopy_binary
 

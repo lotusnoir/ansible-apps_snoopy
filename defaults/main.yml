@@ -1,6 +1,6 @@
 ---
 ### Binary install
-snoopy_version: "2.4.14"
+snoopy_version: "2.5.0"
 snoopy_url: "https://github.com/a2o/snoopy/releases/download/snoopy-{{ snoopy_version }}/snoopy-{{ snoopy_version }}.tar.gz"
 snoopy_build_dir: "snoopy-{{ snoopy_version }}"
 snoopy_tmp_dir: /tmp
