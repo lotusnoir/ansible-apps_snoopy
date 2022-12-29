@@ -22,14 +22,7 @@
 
     - name: "Download requirements"
       ansible.builtin.package:
-        name:
-          - gcc
-          - gzip
-          - make
-          - procps
-          - socat
-          - tar
-          - wget
+        name: "{{ snoopy_compile_pkg_install }}"
         state: present
 
     - name: "Download last snoopy script"
@@ -41,6 +34,12 @@
     - name: "Install snoppy"
       ansible.builtin.command: /tmp/install-snoopy.sh stable
       changed_when: false
+
+    - name: "Uninstall unnecessary requirements"
+      ansible.builtin.package:
+        name: "{{ snoopy_compile_pkg_uninstall }}"
+        state: absent
+      when: snoopy_uninstall_pkg|bool
 
 - name: "Set config"
   ansible.builtin.lineinfile:

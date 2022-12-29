@@ -5,6 +5,7 @@ snoopy_url: "https://github.com/a2o/snoopy/releases/download/snoopy-{{ snoopy_ve
 snoopy_build_dir: "snoopy-{{ snoopy_version }}"
 snoopy_tmp_dir: /tmp
 snoopy_force_install: false
+snoopy_uninstall_pkg: true
 
 ### Options
 snoopy_log_file: "/var/log/snoopy.log"
