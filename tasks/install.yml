@@ -8,11 +8,11 @@
 - name: "Installation"
   when: not snoopy_binary.stat.exists or snoopy_force_install|bool
   block:
-    - name: "DEBIAN11 | Install requirements"
+    - name: "DEBIAN-11/12 | Install requirements"
       ansible.builtin.package:
         name: libc6-dev
         state: present
-      when: ansible_distribution == 'Debian' and ansible_distribution_major_version == '11'
+      when: ansible_distribution == 'Debian' and ansible_distribution_major_version >= '11'
 
     - name: "Create log file"
       ansible.builtin.file:
@@ -33,7 +33,7 @@
 
     - name: "Install snoppy"
       ansible.builtin.command: /tmp/install-snoopy.sh stable
-      changed_when: false
+      changed_when: true
 
     - name: "Uninstall unnecessary requirements"
       ansible.builtin.package:
