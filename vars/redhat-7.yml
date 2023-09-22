@@ -1,0 +1,4 @@
+---
+snoopy_exec_path: "/usr/local/sbin"
+#snoopy_cfg_file: "/usr/local/etc/snoopy.ini"
+snoopy_cfg_file: "/etc/snoopy.ini"
