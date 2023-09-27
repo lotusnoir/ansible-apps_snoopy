@@ -8,5 +8,6 @@ snoopy_force_install: false
 snoopy_uninstall_pkg: true
 
 ### Options
+snoopy_configure_options: "--enable-config-file --sysconfdir=/etc --enable-filtering"
 snoopy_log_file: "/var/log/snoopy.log"
 snoopy_msg_format: "[%{datetime}] workdir=%{cwd} login=%{login} pid=%{pid}  tty=%{tty} tty_username=%{tty_username} cmdline=%{cmdline}"

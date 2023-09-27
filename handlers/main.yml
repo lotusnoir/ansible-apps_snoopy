@@ -1,6 +1,6 @@
 ---
 - name: stop snoopy
-  ansible.builtin.command: '{{ snoopy_exec_path }}/snoopyctl disable'
+  ansible.builtin.command: '{{ _snoopy_exec_path }}/snoopyctl disable'
 
 - name: start snoopy
-  ansible.builtin.command: '{{ snoopy_exec_path }}/snoopyctl enable'
+  ansible.builtin.command: '{{ _snoopy_exec_path }}/snoopyctl enable'

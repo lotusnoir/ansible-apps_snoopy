@@ -1,7 +1,7 @@
 ---
 - name: "Check for snoopy installation"
   ansible.builtin.stat:
-    path: '{{ snoopy_exec_path }}/snoopyctl'
+    path: '{{ _snoopy_exec_path }}/snoopyctl'
   changed_when: false
   register: snoopy_binary
 
@@ -14,36 +14,52 @@
         state: present
       when: ansible_distribution == 'Debian' and ansible_distribution_major_version >= '11'
 
+    - name: "Download requirements"
+      ansible.builtin.package:
+        name: "{{ _snoopy_compile_pkg_install }}"
+        state: present
+
+    - name: "Unarchive source"
+      ansible.builtin.unarchive:
+        src: '{{ snoopy_url }}'
+        dest: '{{ snoopy_tmp_dir }}'
+        remote_src: true
+
+    - name: "Run configure..."
+      ansible.builtin.command: "./configure {{ snoopy_configure_options }}"
+      args:
+        chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
+      changed_when: false
+
+    - name: "Run make..."
+      community.general.make:
+        chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
+
+    - name: "Run make install..."
+      community.general.make:
+        chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
+        target: install
+
     - name: "Create log file"
       ansible.builtin.file:
         path: /var/log/snoopy.log
         state: touch
         mode: '0644'
 
-    - name: "Download requirements"
-      ansible.builtin.package:
-        name: "{{ snoopy_compile_pkg_install }}"
-        state: present
-
-    - name: "Download last snoopy script"
-      ansible.builtin.get_url:
-        url: https://github.com/a2o/snoopy/raw/install/install/install-snoopy.sh
-        dest: /tmp/install-snoopy.sh
-        mode: '0755'
-
-    - name: "Install snoppy"
-      ansible.builtin.command: /tmp/install-snoopy.sh stable
-      changed_when: true
-
     - name: "Uninstall unnecessary requirements"
       ansible.builtin.package:
-        name: "{{ snoopy_compile_pkg_uninstall }}"
+        name: "{{ _snoopy_compile_pkg_uninstall }}"
         state: absent
       when: snoopy_uninstall_pkg|bool
 
+    - name: "Clean source files"
+      ansible.builtin.file:
+        path: "{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}"
+        state: absent
+
 - name: "Set config"
   ansible.builtin.lineinfile:
-    dest: '{{ snoopy_cfg_file }}'
+    dest: '{{ _snoopy_cfg_file }}'
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
     state: present
@@ -62,4 +78,3 @@
 #    owner: root
 #    group: root
 #    mode: '0640'
-#

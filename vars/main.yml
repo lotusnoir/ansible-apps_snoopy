@@ -1,8 +1,8 @@
 ---
-snoopy_exec_path: "/usr/local/sbin"
-snoopy_cfg_file: "/etc/snoopy.ini"
+_snoopy_exec_path: "/usr/local/sbin"
+_snoopy_cfg_file: "/etc/snoopy.ini"
 
-snoopy_compile_pkg_install:
+_snoopy_compile_pkg_install:
   - gcc
   - make
   - procps
@@ -11,7 +11,7 @@ snoopy_compile_pkg_install:
   - tar
   - wget
 
-snoopy_compile_pkg_uninstall:
+_snoopy_compile_pkg_uninstall:
   - gcc
   - make
   - wget
