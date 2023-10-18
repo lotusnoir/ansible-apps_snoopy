@@ -1,7 +1,5 @@
 ---
-_ansible_managed: "Ansible managed: {{ role_path|basename }} - modified on %Y-%m-%d %H:%M:%S"
-
-_snoopy_exec_path: "/usr/local/sbin"
+_snoopy_exec_path: '{% if snoopy_install_mode == "repo" %}/usr/sbin{% else %}/usr/local/sbin{% endif %}'
 _snoopy_cfg_file: "/etc/snoopy.ini"
 
 _snoopy_compile_pkg_install:

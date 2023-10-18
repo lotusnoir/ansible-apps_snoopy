@@ -1,4 +1,4 @@
-{{ _ansible_managed | comment(decoration='; ') }}
+{{ ansible_managed | comment(decoration='; ') }}
 
 {% if snoopy_ini_options is defined and snoopy_ini_options | length > 0 %}
 {{ snoopy_ini_options }}
