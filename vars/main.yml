@@ -1,4 +1,6 @@
 ---
+_ansible_managed: "Ansible managed: {{ role_path|basename }} - modified on %Y-%m-%d %H:%M:%S"
+
 _snoopy_exec_path: "/usr/local/sbin"
 _snoopy_cfg_file: "/etc/snoopy.ini"
 

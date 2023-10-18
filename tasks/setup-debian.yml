@@ -1,0 +1,42 @@
+---
+- name: "DEBIAN | Install gpg package."
+  ansible.builtin.package:
+    name: gpg
+    state: present
+
+- name: "DEBIAN | Add snoopy apt signing key."
+  ansible.builtin.apt_key:
+    url: "{{ snoopy_repository_key }}"
+    state: present
+  when:
+    - snoopy_repository_key is defined and snoopy_repository_key|length > 0
+
+- name: "DEBIAN | Add snoopy apt signing key."
+  ansible.builtin.get_url:
+    url: "{{ snoopy_repository_key }}"
+    dest: /etc/apt/trusted.gpg.d/snoopy.asc
+    mode: '0644'
+    force: true
+  when:
+    - snoopy_repository_key is defined and snoopy_repository_key|length > 0
+
+- name: "DEBIAN | Add snoopy repo to apt list"
+  ansible.builtin.apt_repository:
+    repo: "{{ snoopy_repository }}"
+    state: present
+    filename: "{{ snoopy_repository_file }}"
+  when:
+    - snoopy_repository is defined and snoopy_repository|length > 0
+
+- name: "DEBIAN | Update apt cache."
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 600
+  changed_when: false
+
+- name: "DEBIAN | Set true to debconf preload question"
+  ansible.builtin.debconf:
+    name: snoopy
+    question: snoopy/install-ld-preload
+    value: true
+    vtype: boolean

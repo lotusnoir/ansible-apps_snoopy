@@ -1,0 +1,49 @@
+---
+- name: "DEBIAN-11/12 | Install requirements"
+  ansible.builtin.package:
+    name: libc6-dev
+    state: present
+  when: ansible_distribution == 'Debian' and ansible_distribution_major_version >= '11'
+
+- name: "Download requirements"
+  ansible.builtin.package:
+    name: "{{ _snoopy_compile_pkg_install }}"
+    state: present
+
+- name: "Unarchive source"
+  ansible.builtin.unarchive:
+    src: '{{ snoopy_url }}'
+    dest: '{{ snoopy_tmp_dir }}'
+    remote_src: true
+
+- name: "Run configure..."
+  ansible.builtin.command: "./configure {{ snoopy_configure_options }}"
+  args:
+    chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
+  changed_when: false
+
+- name: "Run make..."
+  community.general.make:
+    chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
+
+- name: "Run make install..."
+  community.general.make:
+    chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
+    target: install
+
+- name: "Create log file"
+  ansible.builtin.file:
+    path: /var/log/snoopy.log
+    state: touch
+    mode: '0644'
+
+- name: "Uninstall unnecessary requirements"
+  ansible.builtin.package:
+    name: "{{ _snoopy_compile_pkg_uninstall }}"
+    state: absent
+  when: snoopy_uninstall_pkg|bool
+
+- name: "Clean source files"
+  ansible.builtin.file:
+    path: "{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}"
+    state: absent

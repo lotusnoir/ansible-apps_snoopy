@@ -8,73 +8,30 @@
 - name: "Installation"
   when: not snoopy_binary.stat.exists or snoopy_force_install|bool
   block:
-    - name: "DEBIAN-11/12 | Install requirements"
-      ansible.builtin.package:
-        name: libc6-dev
-        state: present
-      when: ansible_distribution == 'Debian' and ansible_distribution_major_version >= '11'
+    - name: "Install by repository"
+      when: snoopy_install_mode == 'repo'
+      block:
+        - include_tasks: setup-debian.yml
+          when:
+            - ansible_os_family == 'Debian'
 
-    - name: "Download requirements"
-      ansible.builtin.package:
-        name: "{{ _snoopy_compile_pkg_install }}"
-        state: present
+        - include_tasks: setup-redhat.yml
+          when:
+            - ansible_os_family == 'RedHat' or ansible_distribution == 'OracleLinux'
 
-    - name: "Unarchive source"
-      ansible.builtin.unarchive:
-        src: '{{ snoopy_url }}'
-        dest: '{{ snoopy_tmp_dir }}'
-        remote_src: true
+        - name: "Install snoopy package"
+          ansible.builtin.package:
+            name: "snoopy"
+            state: present
 
-    - name: "Run configure..."
-      ansible.builtin.command: "./configure {{ snoopy_configure_options }}"
-      args:
-        chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
-      changed_when: false
-
-    - name: "Run make..."
-      community.general.make:
-        chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
-
-    - name: "Run make install..."
-      community.general.make:
-        chdir: '{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}'
-        target: install
-
-    - name: "Create log file"
-      ansible.builtin.file:
-        path: /var/log/snoopy.log
-        state: touch
-        mode: '0644'
-
-    - name: "Uninstall unnecessary requirements"
-      ansible.builtin.package:
-        name: "{{ _snoopy_compile_pkg_uninstall }}"
-        state: absent
-      when: snoopy_uninstall_pkg|bool
-
-    - name: "Clean source files"
-      ansible.builtin.file:
-        path: "{{ snoopy_tmp_dir }}/{{ snoopy_build_dir }}"
-        state: absent
+    - name: "Install by sources"
+      include_tasks: src.yml
+      when: snoopy_install_mode == 'src'
 
 - name: "Set config"
-  ansible.builtin.lineinfile:
+  ansible.builtin.template:
+    src: snoopy.ini.j2
     dest: '{{ _snoopy_cfg_file }}'
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    state: present
-  with_items:
-    - {regexp: "^output = file:", line: "output = file:{{ snoopy_log_file }}"}
-    - {regexp: '^filter_chain =', line: 'filter_chain = "exclude_spawns_of:cron,my_daemon;only_tty"'}
-    - {regexp: "^message_format =", line: 'message_format = "{{ snoopy_msg_format }}"'}
-  notify:
-    - stop snoopy
-    - start snoopy
-
-#- name: snoopy | Create a logrotate file
-#  ansible.builtin.copy:
-#    src: snoopy
-#    dest: /etc/logrotate.d/snoopy
-#    owner: root
-#    group: root
-#    mode: '0640'
+    owner: root
+    group: root
+    mode: 0644
