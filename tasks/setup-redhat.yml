@@ -6,7 +6,7 @@
     content: |
       [snoopy]
       name = snoopy
-      baseurl = https://a2o.github.io/snoopy-packages/repo/centos/{{ ansible_facts['distribution_major_version'] }}/stable/
+      baseurl = https://a2o.github.io/snoopy-packages/repo/centos/{{ ansible_distribution_major_version }}/stable/
       gpgcheck=1
       gpgkey={{ snoopy_repository_key }}
       repo_gpgcheck=1

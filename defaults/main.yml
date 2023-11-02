@@ -12,7 +12,7 @@ snoopy_configure_options: "--enable-config-file --sysconfdir=/etc --enable-filte
 
 ### Repo install
 snoopy_repository_key: "https://a2o.github.io/snoopy-packages/snoopy-packages-key.pub"
-snoopy_repository: "deb https://a2o.github.io/snoopy-packages/repo/{{ ansible_facts['distribution'] | lower }} {{ ansible_facts['distribution_release'] }} stable"
+snoopy_repository: "deb https://a2o.github.io/snoopy-packages/repo/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"
 snoopy_repository_file: "snoopy-stable"
 
 ### Options
