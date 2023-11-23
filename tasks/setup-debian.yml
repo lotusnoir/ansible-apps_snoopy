@@ -3,6 +3,10 @@
   ansible.builtin.package:
     name: gpg
     state: present
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
 
 - name: "DEBIAN | Add snoopy apt signing key."
   ansible.builtin.apt_key:
@@ -33,6 +37,10 @@
     update_cache: true
     cache_valid_time: 600
   changed_when: false
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
 
 - name: "DEBIAN | Set true to debconf preload question"
   ansible.builtin.debconf:

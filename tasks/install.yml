@@ -23,6 +23,10 @@
           ansible.builtin.package:
             name: "snoopy"
             state: present
+          register: pkg_result
+          retries: 12
+          delay: 10
+          until: pkg_result is success
 
     - name: "Install by sources"
       include_tasks: src.yml
