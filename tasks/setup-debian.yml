@@ -8,13 +8,6 @@
   delay: 10
   until: pkg_result is success
 
-#- name: "DEBIAN | Add snoopy apt signing key."
-#  ansible.builtin.apt_key:
-#    url: "{{ snoopy_repository_key }}"
-#    state: present
-#  when:
-#    - snoopy_repository_key is defined and snoopy_repository_key|length > 0
-
 - name: "DEBIAN | Add snoopy apt signing key."
   ansible.builtin.get_url:
     url: "{{ snoopy_repository_key }}"
