@@ -2,7 +2,7 @@
 - name: "REDHAT | Create repo file"
   ansible.builtin.copy:
     dest: "/etc/yum.repos.d/snoopy.repo"
-    mode: 0644
+    mode: '0644'
     content: |
       [snoopy]
       name = snoopy
