@@ -1,5 +1,5 @@
 ---
-snoopy_install_mode: repo #or src
+snoopy_install_mode: repo
 snoopy_force_install: false
 
 ### Source install
