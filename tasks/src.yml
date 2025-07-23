@@ -3,20 +3,20 @@
   ansible.builtin.package:
     name: libc6-dev
     state: present
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
   when: ansible_distribution == 'Debian' and ansible_distribution_major_version >= '11'
 
 - name: "Download requirements"
   ansible.builtin.package:
     name: "{{ _snoopy_compile_pkg_install }}"
     state: present
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
 
 - name: "Unarchive source"
   ansible.builtin.unarchive:
@@ -49,10 +49,10 @@
   ansible.builtin.package:
     name: "{{ _snoopy_compile_pkg_uninstall }}"
     state: absent
-  register: pkg_result
+  register: __pkg_result
   retries: 12
   delay: 10
-  until: pkg_result is success
+  until: __pkg_result is success
   when: snoopy_uninstall_pkg|bool
 
 - name: "Clean source files"
