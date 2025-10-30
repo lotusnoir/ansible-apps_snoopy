@@ -14,9 +14,9 @@ galaxy_info:
         - "noble"
     - name: "Debian"
       versions:
-        - "buster"
-        - "bullseye"
         - "bookworm"
+        - "bullseye"
+        - "buster"
     - name: "Rocky"
       versions:
         - "9"
