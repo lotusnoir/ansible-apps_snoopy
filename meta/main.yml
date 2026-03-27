@@ -20,15 +20,18 @@ galaxy_info:
         - "trixie"
     - name: "Rocky"
       versions:
+        - "10"
         - "9"
     - name: "OracleLinux"
       versions:
         - "8"
         - "9"
+        - "10"
     - name: "RedHat"
       versions:
         - "8"
         - "9"
+        - "10"
 
   galaxy_tags:
     - logs
