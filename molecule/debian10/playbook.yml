@@ -4,6 +4,9 @@
   become: true
   any_errors_fatal: true
 
+  vars:
+    snoopy_install_mode: "{{ 'src' if ansible_distribution == 'Debian' and ansible_distribution_major_version | int >= 13 else 'repo' }}"
+
   tasks:
     - name: Include role
       ansible.builtin.include_role:

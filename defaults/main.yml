@@ -3,7 +3,7 @@ snoopy_install_mode: repo
 snoopy_force_install: false
 
 ### Source install
-snoopy_version: "2.5.1"
+snoopy_version: "2.5.2"
 snoopy_url: "https://github.com/a2o/snoopy/releases/download/snoopy-{{ snoopy_version }}/snoopy-{{ snoopy_version }}.tar.gz"
 snoopy_build_dir: "snoopy-{{ snoopy_version }}"
 snoopy_tmp_dir: /tmp
