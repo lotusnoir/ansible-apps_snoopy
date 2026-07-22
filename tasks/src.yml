@@ -24,6 +24,29 @@
     dest: '{{ snoopy_tmp_dir }}'
     remote_src: true
 
+- name: "UBUNTU-26 | Fix Snoopy _XOPEN_SOURCE redefinition"
+  ansible.builtin.replace:
+    path: "{{ snoopy_tmp_dir }}/snoopy-2.5.2/src/snoopy.h"
+    regexp: '^#define\s+_XOPEN_SOURCE\s+700'
+    replace: |
+      #ifndef _XOPEN_SOURCE
+      #define _XOPEN_SOURCE 700
+      #endif
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_major_version | int >= 26
+
+- name: "UBUNTU-26 | Fix Snoopy const strchr warning"
+  ansible.builtin.replace:
+    path: /tmp/snoopy-2.5.2/src/datasource/domain.c
+    regexp: |
+      hashPtr = strchr\(linePtr, '#'\);
+    replace: |
+      hashPtr = (char *)strchr(linePtr, '#');
+  when:
+    - ansible_distribution == "Ubuntu"
+    - ansible_distribution_major_version | int >= 26
+
 - name: "Run configure..."
   ansible.builtin.command: "./configure {{ snoopy_configure_options }}"
   args:
